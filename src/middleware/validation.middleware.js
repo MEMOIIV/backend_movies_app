@@ -17,27 +17,31 @@ export const generalFields = {
   password: Joi.string().pattern(
     new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/)
   ),
-  confirmPassword: Joi.string().valid(Joi.ref("password")),
+  confirmPassword: Joi.string().valid(Joi.ref("password")).messages({
+    "any.only": "Confirm password must match password",
+  }),
   phone: Joi.string().pattern(
     new RegExp(/^(?:\+20|0020)(1[0125]\d{8})$|^(01[0125]\d{8})$/)
   ),
-  otp : Joi.string().pattern(new RegExp (/^\d{6}$/)),
-  idToken : Joi.string().token(),
-  idMongoDB : Joi.string().custom((value , helper)=>{
-        return  Types.ObjectId.isValid(value) ? true : helper.message("In-valid mongoDB ID")
-      }),
-  gender : Joi.string().valid(...Object.values(genderEnum)),
-  file:{
-    fieldname : Joi.string().required(),
-    originalname : Joi.string().required(),
-    encoding : Joi.string().required(),
-    mimetype : Joi.string().required(),
-    finalPath : Joi.string().required(),
-    destination : Joi.string().required(),
-    filename : Joi.string().required(),
-    path : Joi.string().required(),
-    size : Joi.number().positive().required(),
-  }
+  otp: Joi.string().pattern(new RegExp(/^\d{6}$/)),
+  idToken: Joi.string().token(),
+  idMongoDB: Joi.string().custom((value, helper) => {
+    return Types.ObjectId.isValid(value)
+      ? true
+      : helper.message("In-valid mongoDB ID");
+  }),
+  gender: Joi.string().valid(...Object.values(genderEnum)),
+  file: {
+    fieldname: Joi.string().required(),
+    originalname: Joi.string().required(),
+    encoding: Joi.string().required(),
+    mimetype: Joi.string().required(),
+    finalPath: Joi.string().required(),
+    destination: Joi.string().required(),
+    filename: Joi.string().required(),
+    path: Joi.string().required(),
+    size: Joi.number().positive().required(),
+  },
 };
 
 export const validation = (schema) => {
@@ -56,7 +60,7 @@ export const validation = (schema) => {
     }
     if (validationError.length) {
       //  return next(new Error(validationError)) // return => [object object , object object] 😂😂
-      res.status(400).json({
+      return res.status(400).json({
         error_message: "validation error",
         error: validationError,
       });
