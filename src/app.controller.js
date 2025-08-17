@@ -95,7 +95,7 @@ async function bootstrap() {
   });
   app.use(globalErrorHandler);
   return app.listen(port, () => {
-    // console.log(`Server running on ${port} 🔥🚀`);
+    console.log(`Server running on ${port} 🔥🚀`);
   });
 }
 
