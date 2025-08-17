@@ -87,6 +87,31 @@ EMAIL_PASS=your_email_password
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
+--- 
+## 📌 API Endpoints
+
+### 🔑 Auth API
+| Method    | Endpoint                      | Description              |
+| --------- | ----------------------------- | ------------------------ |
+| **POST**  | `/auth/signup`                | Create new user account  |
+| **POST**  | `/auth/login`                 | Login with email & pass  |
+| **PATCH** | `/auth/confirm-email`         | Confirm user email       |
+| **PATCH** | `/auth/reset-forget-password` | Reset forgotten password |
+
+### 👤 User API
+| Method     | Endpoint                 | Description             |
+| ---------- | ------------------------ | ----------------------- |
+| **GET**    | `/users/:id`             | Get user profile by ID  |
+| **PATCH**  | `/users/update-profile`  | Update user profile     |
+| **DELETE** | `/users/:id/hard-delete` | Permanently delete user |
+
+### 💬 Message API
+| Method     | Endpoint                           | Description                   |
+| ---------- | ---------------------------------- | ----------------------------- |
+| **POST**   | `/messages/:receiverId`            | Send message with attachments |
+| **GET**    | `/messages/get-message/:messageId` | Get message by ID             |
+| **DELETE** | `/messages/:messageId/delete`      | Hard delete message           |
+
 
 ---
 
