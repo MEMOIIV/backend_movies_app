@@ -10,6 +10,7 @@ It provides authentication, authorization, file upload, and messaging features w
 The project also includes email confirmation, cloud storage (Cloudinary), and deployment on AWS.
 
 🌐 **Server Home** : [AWS Server](http://ec2-13-61-160-51.eu-north-1.compute.amazonaws.com/)  
+🌐 **Server Home with HTTPS** : [AWS Server with ngrok](https://1e2832ac9e31.ngrok-free.app/)  
 🔗 **Live Demo** : [Live API](http://ec2-13-61-160-51.eu-north-1.compute.amazonaws.com/user/public)  
 🔗 **Postman Docs** : [Postman Documentation](https://documenter.getpostman.com/view/24020034/2sB3BHmUSY)   
 
