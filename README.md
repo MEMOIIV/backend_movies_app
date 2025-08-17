@@ -9,8 +9,8 @@ This is a backend project built with Node.js, Express, and MongoDB (Mongoose).
 It provides authentication, authorization, file upload, and messaging features with secure token management.
 The project also includes email confirmation, cloud storage (Cloudinary), and deployment on AWS.
 
-🌐 **Server Home** : [Live API on AWS](http://ec2-13-61-160-51.eu-north-1.compute.amazonaws.com/)  
-🔗 **Live Demo** : [Live API on AWS](http://ec2-13-61-160-51.eu-north-1.compute.amazonaws.com/user/public)  
+🌐 **Server Home** : [AWS Server](http://ec2-13-61-160-51.eu-north-1.compute.amazonaws.com/)  
+🔗 **Live Demo** : [Live API](http://ec2-13-61-160-51.eu-north-1.compute.amazonaws.com/user/public)  
 🔗 **Postman Docs** : [Postman Documentation](https://documenter.getpostman.com/view/24020034/2sB3BHmUSY)   
 
 ---
