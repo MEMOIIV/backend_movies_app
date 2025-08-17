@@ -11,8 +11,6 @@ import connectDB from "./DB/connection.db.js";
 import cors from "cors";
 import "./config/cronJobs.js";
 import { globalErrorHandler } from "./utils/response.js";
-import {rateLimit} from "express-rate-limit";
-import { sendEmail } from "./utils/email/send.email.js";
 import morgan from "morgan";
 
 
