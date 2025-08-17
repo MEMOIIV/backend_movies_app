@@ -10,6 +10,7 @@ import * as userValidation from "./user.validation.js";
 const router = Router({caseSensitive:true ,strict:true})
 
 router.get("/", auth({ accessRole: endPoint.profile }), userService.profile);
+router.get("/public", userService.allProfile);
 
 router.get(
   "/:profileId/sheared-profile",

@@ -21,6 +21,17 @@ export const profile = asyncHandler(async (req, res, next) => {
   user.phone = await decrypt({ cipherText: req.user.phone });
   return successResponse({ res, data: user  });
 });
+// get all profiles
+export const allProfile = asyncHandler(async (req, res, next) => {
+  const user = await DBService.findOne({
+    model : UserModel,
+    select : "_id firstName lastName gender createdAt updatedAt cover",
+    populate:[{
+      path:"messages"
+    }]
+  })
+  return successResponse({ res, data: user  });
+});
 // sheared profile
 export const shearProfile = asyncHandler(async (req, res, next) => {
   const { profileId } = req.params;
