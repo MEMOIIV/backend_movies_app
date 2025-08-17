@@ -143,30 +143,6 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
    ```bash
    pm2 start server.js
    ```
-
----
-
-## 📮 API Endpoints (Examples)
-
-### Auth
-
-* `POST /auth/signup` → Register new user
-* `POST /auth/login` → Login user
-* `POST /auth/google` → Login with Google
-* `POST /auth/logout` → Logout & revoke token
-
-### User
-
-* `GET /user/profile` → Get user profile
-* `PUT /user/update` → Update profile
-* `DELETE /user/delete` → Delete account
-
-### Messages
-
-* `GET /messages` → Get all user messages
-* `POST /messages` → Create message (with image optional)
-* `DELETE /messages/:id` → Delete message
-
 ---
 
 ## 📤 Deployment
