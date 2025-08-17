@@ -2,35 +2,51 @@ import { asyncHandler, successResponse } from "../../utils/response.js";
 import { decrypt, encrypt } from "../../utils/security/encryption.security.js";
 import { generateLoginToken } from "../../utils/security/token.security.js";
 import { roleEnum, UserModel } from "../../DB/models/User.Model.js";
-import {comparHash,generateHash,} from "../../utils/security/hash.security.js";
+import {
+  comparHash,
+  generateHash,
+} from "../../utils/security/hash.security.js";
 import * as DBService from "../../DB/db.service.js";
 import { RevokeTokenModel } from "../../DB/models/Revoke.token.mode;.js";
-import {deleteFolderByPrefix,deleteResources,destroyFile,uploadFile,uploadFiles,} from "../../utils/multer/cloudinary.js";
+import {
+  deleteFolderByPrefix,
+  deleteResources,
+  destroyFile,
+  uploadFile,
+  uploadFiles,
+} from "../../utils/multer/cloudinary.js";
 
 // get profile
 export const profile = asyncHandler(async (req, res, next) => {
   const user = await DBService.findOne({
-    model : UserModel,
-    filter:{
-      _id : req.user._id
+    model: UserModel,
+    filter: {
+      _id: req.user._id,
     },
-    populate:[{
-      path:"messages"
-    }]
-  })
+    populate: [
+      {
+        path: "messages",
+      },
+    ],
+  });
   user.phone = await decrypt({ cipherText: req.user.phone });
-  return successResponse({ res, data: user  });
+  return successResponse({ res, data: user });
 });
 // get all profiles
 export const allProfile = asyncHandler(async (req, res, next) => {
-  const user = await DBService.findOne({
-    model : UserModel,
-    select : "_id firstName lastName gender createdAt updatedAt cover",
-    populate:[{
-      path:"messages"
-    }]
-  })
-  return successResponse({ res, data: user  });
+  const users = await DBService.find({
+    model: UserModel,
+    select: "_id firstName lastName gender createdAt updatedAt cover",
+    populate: [
+      {
+        path: "messages",
+      },
+    ],
+  });
+  if (!users || users.length === 0) {
+    return res.status(404).json({ message: "No users found 😢" });
+  }
+  return successResponse({ res, data: users });
 });
 // sheared profile
 export const shearProfile = asyncHandler(async (req, res, next) => {
@@ -188,9 +204,9 @@ export const hardDeleted = asyncHandler(async (req, res, next) => {
       deletedAt: { $exists: true },
     },
   });
-  // 🔴 delete image form cloudinary 🔴 \\ 
+  // 🔴 delete image form cloudinary 🔴 \\
   if (user.deletedCount) {
-    await deleteFolderByPrefix({prefix : `user/${userId}`});
+    await deleteFolderByPrefix({ prefix: `user/${userId}` });
     // await deleteSubFolder({prefix : `user/${userId}`})
     // await deleteFolder({prefix : `user/${userId}`})
   }
