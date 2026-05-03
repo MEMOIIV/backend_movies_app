@@ -1,162 +1,62 @@
-# Saraha_App
+# 🎬 Movies App API – Backend Node.js Project
+
 ---
 
-# 🛠️ Backend Project – Node.js + Express + MongoDB
+# 🛠️ Backend Project – Node.js + Express + MongoDB + Vercel
 
 ## 📌 Description
 
-This is a backend project built with Node.js, Express, and MongoDB (Mongoose).
-It provides authentication, authorization, file upload, and messaging features with secure token management.
-The project also includes email confirmation, cloud storage (Cloudinary), and deployment on AWS.
+This is a robust backend system built with Node.js, Express, and MongoDB.
+Originally designed for a messaging app, it has been evolved into a **Movie App Backend** that supports integration with **The Movie Database (TMDB) API**, user authentication, and a personal favorites management system.
 
-🌐 **Server Home** : [AWS Server](http://ec2-13-61-160-51.eu-north-1.compute.amazonaws.com/)  
-🌐 **Server Home with HTTPS** : [AWS Server with ngrok](https://1e2832ac9e31.ngrok-free.app/)  
-🔗 **Live Demo** : [Live API](http://ec2-13-61-160-51.eu-north-1.compute.amazonaws.com/user/public)  
-🔗 **Postman Docs** : [Postman Documentation](https://documenter.getpostman.com/view/24020034/2sB3BHmUSY)   
+🌐 **API Base URL** : [Your Vercel URL Here](https://backend-movies-app.vercel.app)  
+🔗 **Postman Docs** : [Postman Documentation](https://documenter.getpostman.com/view/24020034/2sB3BHmUSY)
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features
 
-* **Authentication & Authorization**
+- **Authentication & Security**
+  - **JWT Auth:** Secure Access & Refresh tokens.
+  - **Encryption:** Password hashing via `bcryptjs` and sensitive data encryption via `crypto-js`.
+  - **Validation:** Strict input schema validation using **Joi**.
+  - **CORS:** Configured for secure frontend-backend communication.
 
-  * Sign up / Login
-  * Login with Google
-  * Logout (with revoke token)
-  * Access Token (expires in 1 hour)
-  * Refresh Token (expires in 1 year)
-  * Password hashing (bcryptjs)
-  * Phone encryption (crypto-js)
+- **🎬 Favorites System (New)**
+  - **TMDB Integration:** Seamlessly handles movie and TV show data.
+  - **Personalized Lists:** Users can add/remove movies and series to their favorites.
+  - **Filtering:** Built-in logic to filter favorites by type (Movie/TV).
 
-* **Email Confirmation**
+- **User Management**
+  - Profile updates and secure account handling.
+  - OTP verification for email confirmation using **nanoid** and **nodemailer**.
 
-  * OTP verification using **nanoid**
-  * Sent via **nodemailer**
-
-* **User Management**
-
-  * View / Update / Delete account
-  * Upload profile picture (stored in **Cloudinary**)
-
-* **Messages**
-
-  * Send / Delete messages
-  * Attach images to messages
-
-* **Validation**
-
-  * All input fields validated using **Joi**
-
-* **Security & Performance**
-
-  * Rate limiting (express-rate-limit)
-  * Logging (morgan)
-
-* **Deployment**
-
-  * Hosted on **AWS**
-  * Process manager: **PM2**
-  * Secured with **ngrok (HTTPS tunneling)**
+- **Deployment & Infrastructure**
+  - **Platform:** Hosted on **Vercel** (Serverless Functions).
+  - **Database:** **MongoDB Atlas** with global IP access (`0.0.0.0/0`).
+  - **Environment Management:** Secure variable handling via Vercel Dashboard.
 
 ---
 
 ## 📦 Tech Stack
 
-* **Backend:** Node.js, Express
-* **Database:** MongoDB (Mongoose)
-* **Authentication:** JWT, Google Auth Library
-* **Email:** Nodemailer
-* **File Uploads:** Multer + Cloudinary
-* **Validation:** Joi
-* **Other Tools:** bcryptjs, crypto-js, nanoid, node-cron
+- **Core:** Node.js, Express.js
+- **Database:** MongoDB (Mongoose ODM)
+- **Auth:** JSON Web Token (JWT)
+- **Validation:** Joi
+- **Deployment:** Vercel
+- **Utilities:** Morgan (Logging), CORS, Dotenv, Axios (for TMDB requests)
 
 ---
 
 ## 🔑 Environment Variables
 
-Create a `.env` file in the root directory and add the following variables:
+To run this project, you must set up the following variables in Vercel or your `.env` file:
 
 ```env
-PORT=3000
-DB_URI=your_mongodb_uri
+PORT=5000
+MONGO_URI=your_mongodb_atlas_uri
 JWT_SECRET=your_secret_key
-JWT_REFRESH_SECRET=your_refresh_secret_key
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-EMAIL_USER=your_email@example.com
-EMAIL_PASS=your_email_password
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
+TMDB_API_KEY=your_tmdb_api_key
+NODE_ENV=production
 ```
---- 
-## 📌 API Endpoints
-
-### 🔑 Auth API
-| Method    | Endpoint                      | Description              |
-| --------- | ----------------------------- | ------------------------ |
-| **POST**  | `/auth/signup`                | Create new user account  |
-| **POST**  | `/auth/login`                 | Login with email & pass  |
-| **PATCH** | `/auth/confirm-email`         | Confirm user email       |
-| **PATCH** | `/auth/reset-forget-password` | Reset forgotten password |
-
-### 👤 User API
-| Method     | Endpoint                 | Description             |
-| ---------- | ------------------------ | ----------------------- |
-| **GET**    | `/users/:id`             | Get user profile by ID  |
-| **PATCH**  | `/users/update-profile`  | Update user profile     |
-| **DELETE** | `/users/:id/hard-delete` | Permanently delete user |
-
-### 💬 Message API
-| Method     | Endpoint                           | Description                   |
-| ---------- | ---------------------------------- | ----------------------------- |
-| **POST**   | `/messages/:receiverId`            | Send message with attachments |
-| **GET**    | `/messages/get-message/:messageId` | Get message by ID             |
-| **DELETE** | `/messages/:messageId/delete`      | Hard delete message           |
-
-
----
-
-## 🏗️ Installation & Setup
-
-1. Clone the repository
-
-   ```bash
-   git clone https://github.com/your-username/your-repo.git
-   cd your-repo
-   ```
-
-2. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-3. Add your `.env` file (see variables above).
-
-4. Run the server in development mode
-
-   ```bash
-   npm run dev
-   ```
-
-5. Run in production mode (with PM2)
-
-   ```bash
-   pm2 start server.js
-   ```
----
-
-## 📤 Deployment
-
-* Deployed on **AWS**
-* Process management with **PM2**
-* HTTPS tunnel with **ngrok**
-
----
-
-## 👨‍💻 Author
-
-* **Amin Said Amin**
-
----
