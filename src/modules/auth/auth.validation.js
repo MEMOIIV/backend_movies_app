@@ -21,11 +21,12 @@ import { customAlphabet } from "nanoid"; // nanoid() or customAlphabet( 12345678
 export const signup = {
   body: Joi.object()
     .keys({
-      fullName: generalFields.fullName.required(),
+      firstName: generalFields.fullName.required(),
+      lastName: generalFields.fullName.required(),
       email: generalFields.email.required(),
       password: generalFields.password.required(),
       confirmPassword: generalFields.confirmPassword.required(),
-      phone: generalFields.phone.required(),
+      phone: generalFields.phone,
     })
     .required(), //.options({allowUnKnown: true}) => allow any field go without validation
 };

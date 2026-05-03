@@ -20,13 +20,13 @@ import { nanoidValidation } from "./auth.validation.js";
 // Signup and login System
 
 export const signup = asyncHandler(async (req, res, next) => {
-  const { fullName, email, password, phone } = req.body;
+  const { firstName, lastName, email, password, phone } = req.body;
   if (await DBService.findOne({ model: UserModel, filter: { email } })) {
     return next(
       new Error("Email already exist", {
         // option
         cause: 409,
-      })
+      }),
     );
   }
   const hashPassword = await generateHash({ plaintext: password });
@@ -37,7 +37,8 @@ export const signup = asyncHandler(async (req, res, next) => {
     model: UserModel,
     field: [
       {
-        fullName,
+        firstName,
+        lastName,
         email,
         password: hashPassword,
         phone: encryptPhone,
@@ -67,7 +68,7 @@ export const login = asyncHandler(async (req, res, next) => {
   }
   if (!user.confirmEmail) {
     return next(
-      new Error("Your email address is not confirmed yet", { cause: 400 })
+      new Error("Your email address is not confirmed yet", { cause: 400 }),
     );
   }
   if (!(await comparHash({ plaintext: password, hashValue: user.password }))) {
@@ -116,17 +117,36 @@ export const signupWithGmail = asyncHandler(async (req, res, next) => {
 
 export const loginWithGmail = asyncHandler(async (req, res, next) => {
   const { idToken } = req.body;
-  const { email_verified, email } = await verify(idToken);
+  // const { email_verified, email } = await verify(idToken);
+  const { email_verified, email, name } = await verify(idToken);
   if (!email_verified) {
     return next(new Error("Email not verified"));
   }
-  const user = await DBService.findOne({
+  let user = await DBService.findOne({
     model: UserModel,
     filter: { email, provider: providerEnum.google },
   });
+
+  // if (!user) {
+  //   return next(new Error("In-valid email or password", { cause: 401 }));
+  // }
+
   if (!user) {
-    return next(new Error("In-valid email or password", { cause: 401 }));
+    const [newUser] = await DBService.create({
+      model: UserModel,
+      field: [
+        {
+          email,
+          fullName: name,
+          confirmEmail: Date.now(),
+          provider: providerEnum.google,
+        },
+      ],
+    });
+
+    user = newUser;
   }
+
   const data = await generateLoginToken({ user });
   return successResponse({ res, data });
 });
@@ -213,13 +233,13 @@ export const newOTP = asyncHandler(async (req, res, next) => {
 
   if (user.block && Date.now() < new Date(user.block).getTime()) {
     const minutesLeft = Math.ceil(
-      (new Date(user.block).getTime() - Date.now()) / 60000
+      (new Date(user.block).getTime() - Date.now()) / 60000,
     );
     return next(
       new Error(
         `Too many attempts 🚫. Try again after ${minutesLeft} minutes`,
-        { cause: 429 }
-      )
+        { cause: 429 },
+      ),
     );
   }
 
@@ -237,7 +257,7 @@ export const newOTP = asyncHandler(async (req, res, next) => {
     return next(
       new Error("Too many OTP attempts 🚫. Try again after 5 minutes", {
         cause: 429,
-      })
+      }),
     );
   }
   const otp = await nanoidValidation();

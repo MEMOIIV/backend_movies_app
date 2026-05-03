@@ -24,7 +24,7 @@ export const generalFields = {
     new RegExp(/^(?:\+20|0020)(1[0125]\d{8})$|^(01[0125]\d{8})$/)
   ),
   otp: Joi.string().pattern(new RegExp(/^\d{6}$/)),
-  idToken: Joi.string().token(),
+  idToken: Joi.string(),
   idMongoDB: Joi.string().custom((value, helper) => {
     return Types.ObjectId.isValid(value)
       ? true

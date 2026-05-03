@@ -1,18 +1,18 @@
 import path from "node:path";
 import * as dotenv from "dotenv";
-// dotenv.config({ path: path.resolve("./src/config/.env.dev") });
-dotenv.config({});
+dotenv.config({ path: path.resolve("./src/config/.env.dev") });
+// dotenv.config({});
 
 import express from "express";
 import authController from "./modules/auth/auth.controller.js";
 import userController from "./modules/user/user.controller.js";
 import messageController from "./modules/message/message.controller.js";
+import favoriteController from "./modules/favorite/favorite.controller.js";
 import connectDB from "./DB/connection.db.js";
 import cors from "cors";
 import "./config/cronJobs.js";
 import { globalErrorHandler } from "./utils/response.js";
 import morgan from "morgan";
-
 
 // let whitelist = ["https://example.com", "https://example"]
 // let corsOption = {
@@ -26,33 +26,35 @@ import morgan from "morgan";
 // }
 
 // after create corsOptions put corsOption inside cors => cors(corsOption)
+
+const app = express(); // 1. انقل تعريف app هنا خارج الدالة
+
 async function bootstrap() {
   const app = express();
   app.use(cors());
 
-  // 🔴 morgan 🔴 \\ 
-  app.use(morgan("dev"))
+  // 🔴 morgan 🔴 \\
+  app.use(morgan("dev"));
 
-  // 🔴 rateLimit 🔴 \\ 
-//   const limiter = rateLimit({
-// 	windowMs: 60 * 1000, // 1 minute
-// 	limit: 3, 
-//   // message:async() => {
-//   //  await sendEmail({
-//   //     to:"ameensaid80@gmail.com",
-//   //     html:`<h1>look out some body send many request from your account</h1>`
-//   //   })
-//   // },
-//   // handler: (req, res, next, options) => res.status(options.statusCode).json(options.message), // overwrite on message
-//   standardHeaders:"draft-8",
-// })
-//   const userLimiter = rateLimit({
-// 	windowMs: 60 * 1000, // 1 minute
-// 	limit: 5, 
-// })
-//   app.use("/auth",limiter)
-//   app.use("/user",userLimiter)
-
+  // 🔴 rateLimit 🔴 \\
+  //   const limiter = rateLimit({
+  // 	windowMs: 60 * 1000, // 1 minute
+  // 	limit: 3,
+  //   // message:async() => {
+  //   //  await sendEmail({
+  //   //     to:"ameensaid80@gmail.com",
+  //   //     html:`<h1>look out some body send many request from your account</h1>`
+  //   //   })
+  //   // },
+  //   // handler: (req, res, next, options) => res.status(options.statusCode).json(options.message), // overwrite on message
+  //   standardHeaders:"draft-8",
+  // })
+  //   const userLimiter = rateLimit({
+  // 	windowMs: 60 * 1000, // 1 minute
+  // 	limit: 5,
+  // })
+  //   app.use("/auth",limiter)
+  //   app.use("/user",userLimiter)
 
   // Convert Json buffer data \
   app.use(express.json());
@@ -90,6 +92,7 @@ async function bootstrap() {
   app.use("/auth", authController);
   app.use("/user", userController);
   app.use("/message", messageController);
+  app.use("/favorite", favoriteController);
   app.all("{/*dummy}", (req, res) => {
     res.status(404).json({ message: "In-valid routing 😭💔" });
   });
@@ -98,5 +101,5 @@ async function bootstrap() {
     console.log(`Server running on ${port} 🔥🚀`);
   });
 }
-
+export { app };
 export default bootstrap;

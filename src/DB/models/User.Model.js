@@ -42,6 +42,18 @@ const userSchema = new mongoose.Schema(
         this.provider === providerEnum.system ? true : false;
       },
     },
+    favorites: {
+      type: [
+        {
+          mediaId: String,
+          mediaType: {
+            type: String,
+            enum: ["movie", "tv"],
+          },
+        },
+      ],
+      default: [], // 👈 هذا أهم سطر
+    },
     gender: {
       type: String,
       enum: {
@@ -86,21 +98,21 @@ const userSchema = new mongoose.Schema(
     confirmEmail: Date,
     block: Date,
     deletedAt: Date,
-    deletedBy: {type:mongoose.Schema.Types.ObjectId , ref:"User"},
-    restoreAt : Date,
-    restoreBy : {type:mongoose.Schema.Types.ObjectId , ref:"User"},
+    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    restoreAt: Date,
+    restoreBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     // olePasswordList : {type:[String]},
-    forgetPassword : String,
-    changeLoginCredentials: Date ,
-    img:  { secure_url : String, public_id : String} ,
-    cover: [{secure_url: String,public_id: String}] ,
+    forgetPassword: String,
+    changeLoginCredentials: Date,
+    img: { secure_url: String, public_id: String },
+    cover: [{ secure_url: String, public_id: String }],
   },
   {
     // Option
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 userSchema
@@ -114,11 +126,11 @@ userSchema
     return this.firstName + " " + this.lastName;
   });
 
-userSchema.virtual("messages" , {
-  ref:"Message",
-  localField:"_id",
-  foreignField:"receivedBy",
-})
+userSchema.virtual("messages", {
+  ref: "Message",
+  localField: "_id",
+  foreignField: "receivedBy",
+});
 export const UserModel =
   mongoose.models.User || mongoose.model("User", userSchema);
 UserModel.syncIndexes();
