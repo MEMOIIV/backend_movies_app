@@ -1,105 +1,66 @@
 import path from "node:path";
 import * as dotenv from "dotenv";
-dotenv.config({ path: path.resolve("./src/config/.env.dev") });
-// dotenv.config({});
-
 import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+
+// استيراد الروترات الخاصة بك
 import authController from "./modules/auth/auth.controller.js";
 import userController from "./modules/user/user.controller.js";
 import messageController from "./modules/message/message.controller.js";
 import favoriteController from "./modules/favorite/favorite.controller.js";
 import connectDB from "./DB/connection.db.js";
-import cors from "cors";
-import "./config/cronJobs.js";
 import { globalErrorHandler } from "./utils/response.js";
-import morgan from "morgan";
+import "./config/cronJobs.js";
 
-// let whitelist = ["https://example.com", "https://example"]
-// let corsOption = {
-//   origin:function(origin , callback){
-//     if(whitelist.indexOf(origin) !== -1){
-//       callback(null , true)
-//     }else{
-//       callback(new Error("Not allowed by CORS"))
-//     }
-//   }
-// }
+// إعداد البيئة (تحقق من البيئة قبل المسار المخصص)
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: path.resolve("./src/config/.env.dev") });
+} else {
+  dotenv.config();
+}
 
-// after create corsOptions put corsOption inside cors => cors(corsOption)
-
-const app = express(); // 1. انقل تعريف app هنا خارج الدالة
+const app = express();
 
 async function bootstrap() {
-  const app = express();
+  // Middlewares
   app.use(cors());
-
-  // 🔴 morgan 🔴 \\
   app.use(morgan("dev"));
-
-  // 🔴 rateLimit 🔴 \\
-  //   const limiter = rateLimit({
-  // 	windowMs: 60 * 1000, // 1 minute
-  // 	limit: 3,
-  //   // message:async() => {
-  //   //  await sendEmail({
-  //   //     to:"ameensaid80@gmail.com",
-  //   //     html:`<h1>look out some body send many request from your account</h1>`
-  //   //   })
-  //   // },
-  //   // handler: (req, res, next, options) => res.status(options.statusCode).json(options.message), // overwrite on message
-  //   standardHeaders:"draft-8",
-  // })
-  //   const userLimiter = rateLimit({
-  // 	windowMs: 60 * 1000, // 1 minute
-  // 	limit: 5,
-  // })
-  //   app.use("/auth",limiter)
-  //   app.use("/user",userLimiter)
-
-  // Convert Json buffer data \
   app.use(express.json());
-  //🔴 multer \
+
+  // Static Files
   app.use("/upload", express.static(path.resolve("./src/upload")));
-  const port = process.env.PORT || 5000;
-  // 🔴 DB \
+
+  // Database Connection
   await connectDB();
 
-  // 🔴 Access Cors Allow-Private-Network
-  // let whitelist = ["https://example.com", "https://example"];
-  // app.use(async (req, res, next) => {
-  //   if (!whitelist.includes(req.header("origin"))) {
-  //       console.log(origin);
-  //     return next(new Error("Not Allowed By CORS", { status: 403 }));
-  //   }
-  //   for (const origin of whitelist) {
-  //     if (req.header("origin") == origin) {
-  //       await res.header("Access-Control-Allow-Origin", origin);
-  //       break;
-  //     }
-  //   }
-  //   await res.header("Access-Control-Allow-Headers", "*");
-  //   await res.header("Access-Control-Allow-Private-Network", "true");
-  //   await res.header("Access-Control-Allow-Methods", "*");
-  //   console.log("Origin Work");
-  //   next();
-  // });
-
-  // App-router \
-
+  // Routes
   app.get("/", (req, res) => {
-    res.json({ message: "Welcome to Blog app with express 💖" });
+    res.json({ message: "Welcome to Movie App API 💖" });
   });
+
   app.use("/auth", authController);
   app.use("/user", userController);
   app.use("/message", messageController);
   app.use("/favorite", favoriteController);
-  app.all("{/*dummy}", (req, res) => {
+
+  // 404 Handler - تم تعديلها لتناسب Vercel
+  app.use("*", (req, res) => {
     res.status(404).json({ message: "In-valid routing 😭💔" });
   });
+
+  // Global Error Handler
   app.use(globalErrorHandler);
-  return app.listen(port, () => {
-    console.log(`Server running on ${port} 🔥🚀`);
-  });
+
+  const port = process.env.PORT || 5000;
+
+  // لا تشغل app.listen إذا كنا في Vercel (Production)
+  if (process.env.NODE_ENV !== "production") {
+    app.listen(port, () => {
+      console.log(`Server running on ${port} 🔥🚀`);
+    });
+  }
 }
+
 export { app };
 export default bootstrap;

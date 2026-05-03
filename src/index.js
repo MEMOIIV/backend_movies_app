@@ -1,4 +1,7 @@
-import bootstrap, { app } from "./app.controller.js";
+import bootstrap, { app } from "./src/app.controller.js";
+
+// تشغيل إعدادات التطبيق (قاعدة البيانات، الميدل وير، إلخ)
 bootstrap();
 
-export default app; // 👈 ضروري لـ Vercel
+// تصدير app لـ Vercel
+export default app;
