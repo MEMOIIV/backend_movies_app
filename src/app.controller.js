@@ -45,10 +45,9 @@ async function bootstrap() {
   app.use("/favorite", favoriteController);
 
   // 404 Handler - تم تعديلها لتناسب Vercel
-  app.use("*", (req, res) => {
+  app.all("{/*dummy}", (req, res) => {
     res.status(404).json({ message: "In-valid routing 😭💔" });
   });
-
   // Global Error Handler
   app.use(globalErrorHandler);
 
